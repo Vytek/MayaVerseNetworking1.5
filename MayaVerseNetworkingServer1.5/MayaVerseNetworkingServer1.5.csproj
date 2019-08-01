@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{2F6A5C60-9009-426F-AAF1-EE24A4A215F4}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MayaVerseNetworkingServer1</RootNamespace>
+    <AssemblyName>MayaVerseNetworkingServer1.5</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExternalConsole>true</ExternalConsole>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExternalConsole>true</ExternalConsole>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
+    </Reference>
+    <Reference Include="Scrypt, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Scrypt.NET.1.3.0\lib\net20\Scrypt.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors" />
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.4.6.6\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NetStack\NetStack.Buffers\ArrayPool.cs" />
+    <Compile Include="NetStack\NetStack.Buffers\ArrayPoolEventSource.cs" />
+    <Compile Include="NetStack\NetStack.Buffers\DefaultArrayPool.cs" />
+    <Compile Include="NetStack\NetStack.Buffers\DefaultArrayPoolBucket.cs" />
+    <Compile Include="NetStack\NetStack.Buffers\Utilities.cs" />
+    <Compile Include="NetStack\NetStack.Compression\BoundedRange.cs" />
+    <Compile Include="NetStack\NetStack.Compression\HalfPrecision.cs" />
+    <Compile Include="NetStack\NetStack.Compression\SmallestThree.cs" />
+    <Compile Include="NetStack\NetStack.Serialization\BitBuffer.cs" />
+    <Compile Include="NetStack\NetStack.Threading\ArrayQueue.cs" />
+    <Compile Include="NetStack\NetStack.Threading\ConcurrentBuffer.cs" />
+    <Compile Include="NetStack\NetStack.Threading\ConcurrentPool.cs" />
+    <Compile Include="NetStack\NetStack.Unsafe\Memory.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MayaVerseNetworking1.5\Hazel-Networking\Hazel\Hazel.csproj">
+      <Project>{02CFBD30-D77D-400F-94B2-700F60EFDD7F}</Project>
+      <Name>Hazel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -201,7 +201,7 @@ namespace MayaVerseNetworkingServer1_5
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             string version = fvi.FileVersion;
             Console.WriteLine("Server Version: " + version);
-            Console.WriteLine("BD file path: " + Path.Combine(AssemblyDirectory, @"UsersObjects.db"));
+            Console.WriteLine("DB file path: " + Path.Combine(AssemblyDirectory, @"UsersObjects.db"));
             Console.WriteLine("Server listening on " + (listener as UdpConnectionListener).EndPoint);
             listener.NewConnection += NewConnectionHandler;
             listener.Start();

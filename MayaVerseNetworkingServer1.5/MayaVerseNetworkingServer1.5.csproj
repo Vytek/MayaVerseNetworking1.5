@@ -71,14 +71,14 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\MayaVerseNetworking1.5\Hazel-Networking\Hazel\Hazel.csproj">
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hazel-Networking-master\Hazel\Hazel.csproj">
       <Project>{02CFBD30-D77D-400F-94B2-700F60EFDD7F}</Project>
       <Name>Hazel</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

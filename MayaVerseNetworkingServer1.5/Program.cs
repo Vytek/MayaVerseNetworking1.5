@@ -332,7 +332,6 @@ namespace MayaVerseNetworkingServer1_5
                         // Decompress rotation data
                         Quaternion decompressedRotation = SmallestThree.Decompress(rotation);
 
-
                         if (Server.DEBUG)
                         {
                             Console.WriteLine("RECEIVED DATA: ");
@@ -342,7 +341,7 @@ namespace MayaVerseNetworkingServer1_5
                             Console.WriteLine("isKinematic RECEIVED: " + isKine.ToString());
                             Console.WriteLine("POS RECEIVED: " + decompressedPosition.X.ToString() + ", " + decompressedPosition.Y.ToString() + ", " + decompressedPosition.Z.ToString());
                             Console.WriteLine("ROT RECEIVED: " + decompressedRotation.X.ToString() + ", " + decompressedRotation.Y.ToString() + ", " + decompressedRotation.Z.ToString() + ", " + decompressedRotation.W.ToString());
-                            Console.WriteLine("PosX: "  + decompressedPosition.X);
+                            Console.WriteLine("PosX: " + decompressedPosition.X);
                             Console.WriteLine("PosY: " + decompressedPosition.Y);
                             Console.WriteLine("PosZ: " + decompressedPosition.Z);
                             //var ReceiveMessageFromGameObjectBuffer = new ReceiveMessageFromGameObject(); //NOT USED!
@@ -629,7 +628,7 @@ namespace MayaVerseNetworkingServer1_5
         /// <param name="sender">Sender.</param>
         /// <param name="args">Arguments.</param>
 		private void ClientDisconnectHandler(object sender, DisconnectedEventArgs args)
-        { 
+        {
             Connection connection = (Connection)sender;
             Console.WriteLine("Connection from " + connection.EndPoint + " lost");
             String UIDBuffer = String.Empty;

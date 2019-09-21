@@ -314,6 +314,8 @@ namespace MayaVerseNetworkingServer1_5
                         uint IDObject = data.ReadUInt();
                         CompressedVector3 position = new CompressedVector3(data.ReadUInt(), data.ReadUInt(), data.ReadUInt());
                         CompressedQuaternion rotation = new CompressedQuaternion(data.ReadByte(), data.ReadShort(), data.ReadShort(), data.ReadShort());
+                        //Velocity Vector read but non used
+                        Vector3 velocity = new Vector3(data.ReadUShort(), data.ReadUShort(), data.ReadUShort());
 
                         // Check if bit buffer is fully unloaded
                         Console.WriteLine("Bit buffer is empty: " + data.IsFinished);
@@ -575,6 +577,9 @@ namespace MayaVerseNetworkingServer1_5
                             // Read compressed data
                             Console.WriteLine("Compressed rotation - M: " + compressedRotation.m + ", A:" + compressedRotation.a + ", B:" + compressedRotation.b + ", C:" + compressedRotation.c);
 
+                            //Add Velocity Vector (0,0,0)
+                            Vector3 velocity = Vector3.Zero;
+
                             //Reset bit buffer for further reusing
                             data.Clear();
                             //Serialization
@@ -588,7 +593,10 @@ namespace MayaVerseNetworkingServer1_5
                                 .AddByte(compressedRotation.m)
                                 .AddShort(compressedRotation.a)
                                 .AddShort(compressedRotation.b)
-                                .AddShort(compressedRotation.c);
+                                .AddShort(compressedRotation.c)
+                                .AddUShort(HalfPrecision.Compress(velocity.X))
+                                .AddUShort(HalfPrecision.Compress(velocity.Y))
+                                .AddUShort(HalfPrecision.Compress(velocity.Z));
 
                             Console.WriteLine("BitBuffer: " + data.Length.ToString());
 
@@ -650,7 +658,6 @@ namespace MayaVerseNetworkingServer1_5
             BitBuffer data = new BitBuffer(1024);
             data.AddByte((byte)CommandType.DISCONNECTEDCLIENT)
                 .AddString(UIDBuffer);
-
 
             Console.WriteLine("BitBuffer: " + data.Length.ToString());
 

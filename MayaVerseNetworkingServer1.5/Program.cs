@@ -344,7 +344,7 @@ namespace MayaVerseNetworkingServer1_5
                             Console.WriteLine("isKinematic RECEIVED: " + isKine.ToString());
                             Console.WriteLine("POS RECEIVED: " + decompressedPosition.X.ToString() + ", " + decompressedPosition.Y.ToString() + ", " + decompressedPosition.Z.ToString());
                             Console.WriteLine("ROT RECEIVED: " + decompressedRotation.X.ToString() + ", " + decompressedRotation.Y.ToString() + ", " + decompressedRotation.Z.ToString() + ", " + decompressedRotation.W.ToString());
-                            Console.WriteLine("PosX: "  + decompressedPosition.X);
+                            Console.WriteLine("PosX: " + decompressedPosition.X);
                             Console.WriteLine("PosY: " + decompressedPosition.Y);
                             Console.WriteLine("PosZ: " + decompressedPosition.Z);
                             Console.WriteLine("VEL RECEIVED: " + VelocityReceived.X.ToString() + ", " + VelocityReceived.Y.ToString() + ", " + VelocityReceived.Z.ToString());
@@ -579,10 +579,8 @@ namespace MayaVerseNetworkingServer1_5
                             // Read compressed data
                             Console.WriteLine("Compressed rotation - M: " + compressedRotation.m + ", A:" + compressedRotation.a + ", B:" + compressedRotation.b + ", C:" + compressedRotation.c);
 
-                            //Add Velocity Vector Zero
-                            Vector3 VelocityDefaultZero = Vector3.Zero;
-                            //Half compression using NetStack compression
-
+                            //Add Velocity Vector (0,0,0)
+                            Vector3 velocity = Vector3.Zero;
 
                             //Reset bit buffer for further reusing
                             data.Clear();
@@ -597,8 +595,10 @@ namespace MayaVerseNetworkingServer1_5
                                 .AddByte(compressedRotation.m)
                                 .AddShort(compressedRotation.a)
                                 .AddShort(compressedRotation.b)
-                                .AddShort(compressedRotation.c);
-                                //Add dummy date (0,0,0)
+                                .AddShort(compressedRotation.c)                                //Add dummy date (0,0,0)
+                                .AddUShort(HalfPrecision.Compress(velocity.X))
+                                .AddUShort(HalfPrecision.Compress(velocity.Y))
+                                .AddUShort(HalfPrecision.Compress(velocity.Z));
 
                             Console.WriteLine("BitBuffer: " + data.Length.ToString());
 
@@ -638,7 +638,7 @@ namespace MayaVerseNetworkingServer1_5
         /// <param name="sender">Sender.</param>
         /// <param name="args">Arguments.</param>
 		private void ClientDisconnectHandler(object sender, DisconnectedEventArgs args)
-        { 
+        {
             Connection connection = (Connection)sender;
             Console.WriteLine("Connection from " + connection.EndPoint + " lost");
             String UIDBuffer = String.Empty;
@@ -660,7 +660,6 @@ namespace MayaVerseNetworkingServer1_5
             BitBuffer data = new BitBuffer(1024);
             data.AddByte((byte)CommandType.DISCONNECTEDCLIENT)
                 .AddString(UIDBuffer);
-
 
             Console.WriteLine("BitBuffer: " + data.Length.ToString());
 

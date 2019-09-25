@@ -595,7 +595,7 @@ namespace MayaVerseNetworkingServer1_5
                                 .AddByte(compressedRotation.m)
                                 .AddShort(compressedRotation.a)
                                 .AddShort(compressedRotation.b)
-                                .AddShort(compressedRotation.c)                                //Add dummy date (0,0,0)
+                                .AddShort(compressedRotation.c) //Add dummy date (0,0,0)
                                 .AddUShort(HalfPrecision.Compress(velocity.X))
                                 .AddUShort(HalfPrecision.Compress(velocity.Y))
                                 .AddUShort(HalfPrecision.Compress(velocity.Z));

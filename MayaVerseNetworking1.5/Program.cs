@@ -150,7 +150,7 @@ namespace MayaVerseNetworkingClient1_5
                     }
                     if (cki.Key.ToString().ToLower() == "n")
                     {
-                        System.Numerics.Vector3 NewOnePosition = new Vector3(3,2,1);
+                        System.Numerics.Vector3 NewOnePosition = new Vector3(3, 2, 1);
                         SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 1, AvatarName, true, NewOnePosition, lastRotation, VelocityDefaultZero);
                     }
                     if (cki.Key.ToString().ToLower() == "i")
@@ -202,7 +202,7 @@ namespace MayaVerseNetworkingClient1_5
                 //Read Vector3 Compress Velocity
                 //ushort compressedVelocityX = HalfPrecision.Compress(speed);
                 Vector3 VelocityReceived = new Vector3(HalfPrecision.Decompress(data.ReadUShort()), HalfPrecision.Decompress(data.ReadUShort()), HalfPrecision.Decompress(data.ReadUShort()));
-                
+
                 // Check if bit buffer is fully unloaded
                 Console.WriteLine("Bit buffer is empty: " + data.IsFinished);
 
@@ -276,7 +276,7 @@ namespace MayaVerseNetworkingClient1_5
 
                 byte CommandTypeBuffer = data.ReadByte();
                 string Answer = data.ReadString();
-            
+
                 // Check if bit buffer is fully unloaded
                 Console.WriteLine("Bit buffer is empty: " + data.IsFinished);
 

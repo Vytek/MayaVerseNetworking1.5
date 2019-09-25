@@ -314,6 +314,9 @@ namespace MayaVerseNetworkingServer1_5
                         uint IDObject = data.ReadUInt();
                         CompressedVector3 position = new CompressedVector3(data.ReadUInt(), data.ReadUInt(), data.ReadUInt());
                         CompressedQuaternion rotation = new CompressedQuaternion(data.ReadByte(), data.ReadShort(), data.ReadShort(), data.ReadShort());
+                        // Read Vector3 Compress Velocity
+                        //ushort compressedVelocityX = HalfPrecision.Compress(speed);
+                        Vector3 VelocityReceived = new Vector3(HalfPrecision.Decompress(data.ReadUShort()), HalfPrecision.Decompress(data.ReadUShort()), HalfPrecision.Decompress(data.ReadUShort()));
 
                         // Check if bit buffer is fully unloaded
                         Console.WriteLine("Bit buffer is empty: " + data.IsFinished);
@@ -332,7 +335,6 @@ namespace MayaVerseNetworkingServer1_5
                         // Decompress rotation data
                         Quaternion decompressedRotation = SmallestThree.Decompress(rotation);
 
-
                         if (Server.DEBUG)
                         {
                             Console.WriteLine("RECEIVED DATA: ");
@@ -345,6 +347,7 @@ namespace MayaVerseNetworkingServer1_5
                             Console.WriteLine("PosX: "  + decompressedPosition.X);
                             Console.WriteLine("PosY: " + decompressedPosition.Y);
                             Console.WriteLine("PosZ: " + decompressedPosition.Z);
+                            Console.WriteLine("VEL RECEIVED: " + VelocityReceived.X.ToString() + ", " + VelocityReceived.Y.ToString() + ", " + VelocityReceived.Z.ToString());
                             //var ReceiveMessageFromGameObjectBuffer = new ReceiveMessageFromGameObject(); //NOT USED!
                         }
 
@@ -576,6 +579,11 @@ namespace MayaVerseNetworkingServer1_5
                             // Read compressed data
                             Console.WriteLine("Compressed rotation - M: " + compressedRotation.m + ", A:" + compressedRotation.a + ", B:" + compressedRotation.b + ", C:" + compressedRotation.c);
 
+                            //Add Velocity Vector Zero
+                            Vector3 VelocityDefaultZero = Vector3.Zero;
+                            //Half compression using NetStack compression
+
+
                             //Reset bit buffer for further reusing
                             data.Clear();
                             //Serialization
@@ -590,6 +598,7 @@ namespace MayaVerseNetworkingServer1_5
                                 .AddShort(compressedRotation.a)
                                 .AddShort(compressedRotation.b)
                                 .AddShort(compressedRotation.c);
+                                //Add dummy date (0,0,0)
 
                             Console.WriteLine("BitBuffer: " + data.Length.ToString());
 

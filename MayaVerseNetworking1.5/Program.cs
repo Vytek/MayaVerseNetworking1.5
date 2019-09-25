@@ -72,6 +72,7 @@ namespace MayaVerseNetworkingClient1_5
 
         private static Vector3 lastPosition = new Vector3(0, 0, 0);
         private static Quaternion lastRotation = new Quaternion(1, 1, 1, 1);
+        private static Vector3 VelocityDefaultZero = new Vector3(0, 0, 0);
 
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.
@@ -145,17 +146,17 @@ namespace MayaVerseNetworkingClient1_5
                     if (cki.Key.ToString().ToLower() == "m")
                     {
                         System.Numerics.Vector3 NewOnePosition = new Vector3(1, 2, 3);
-                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 1, AvatarName, true, NewOnePosition, lastRotation);
+                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 1, AvatarName, true, NewOnePosition, lastRotation, VelocityDefaultZero);
                     }
                     if (cki.Key.ToString().ToLower() == "n")
                     {
                         System.Numerics.Vector3 NewOnePosition = new Vector3(3,2,1);
-                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 1, AvatarName, true, NewOnePosition, lastRotation);
+                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 1, AvatarName, true, NewOnePosition, lastRotation, VelocityDefaultZero);
                     }
                     if (cki.Key.ToString().ToLower() == "i")
                     {
                         System.Numerics.Vector3 NewOnePosition = new Vector3(3, 2, 1);
-                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 2, AvatarName, true, NewOnePosition, lastRotation);
+                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 2, AvatarName, true, NewOnePosition, lastRotation, VelocityDefaultZero);
                     }
                 } while (cki.Key != ConsoleKey.Escape);
 
@@ -198,7 +199,10 @@ namespace MayaVerseNetworkingClient1_5
                 uint IDObject = data.ReadUInt();
                 CompressedVector3 position = new CompressedVector3(data.ReadUInt(), data.ReadUInt(), data.ReadUInt());
                 CompressedQuaternion rotation = new CompressedQuaternion(data.ReadByte(), data.ReadShort(), data.ReadShort(), data.ReadShort());
-
+                //Read Vector3 Compress Velocity
+                //ushort compressedVelocityX = HalfPrecision.Compress(speed);
+                Vector3 VelocityReceived = new Vector3(HalfPrecision.Decompress(data.ReadUShort()), HalfPrecision.Decompress(data.ReadUShort()), HalfPrecision.Decompress(data.ReadUShort()));
+                
                 // Check if bit buffer is fully unloaded
                 Console.WriteLine("Bit buffer is empty: " + data.IsFinished);
 
@@ -225,6 +229,7 @@ namespace MayaVerseNetworkingClient1_5
                     Console.WriteLine("IsKINE RECEIVED: " + isKine.ToString());
                     Console.WriteLine("POS RECEIVED: " + decompressedPosition.X.ToString() + ", " + decompressedPosition.Y.ToString() + ", " + decompressedPosition.Z.ToString());
                     Console.WriteLine("ROT RECEIVED: " + decompressedRotation.X.ToString() + ", " + decompressedRotation.Y.ToString() + ", " + decompressedRotation.Z.ToString() + ", " + decompressedRotation.W.ToString());
+                    Console.WriteLine("VEL RECEIVED: " + VelocityReceived.X.ToString() + ", " + VelocityReceived.Y.ToString() + ", " + VelocityReceived.Z.ToString());
                 }
 
                 if ((byte)PacketId.PLAYER_JOIN == TypeBuffer)
@@ -234,7 +239,7 @@ namespace MayaVerseNetworkingClient1_5
                     //Spawn something? YES
                     //Using Dispatcher? NO
                     //PlayerSpawn
-                    SendMessage(SendType.SENDTOOTHER, PacketId.PLAYER_SPAWN, 0, UID + ";" + AvatarName, true, lastPosition, lastRotation);
+                    SendMessage(SendType.SENDTOOTHER, PacketId.PLAYER_SPAWN, 0, UID + ";" + AvatarName, true, lastPosition, lastRotation, VelocityDefaultZero);
                     //TODO: Using Reliable UDP??
                 }
                 else if ((byte)PacketId.OBJECT_MOVE == TypeBuffer)
@@ -284,7 +289,7 @@ namespace MayaVerseNetworkingClient1_5
                         //UnityMainThreadDispatcher.Instance().Enqueue(SetUIDInMainThread(HMessageReceived.Answer));
                         Console.WriteLine("UID RECEIVED: " + Answer);
                         //PLAYER_JOIN MESSAGE (SENDTOOTHER)
-                        SendMessage(SendType.SENDTOOTHER, PacketId.PLAYER_JOIN, 0, UID + ";" + AvatarName, true, lastPosition, lastRotation);
+                        SendMessage(SendType.SENDTOOTHER, PacketId.PLAYER_JOIN, 0, UID + ";" + AvatarName, true, lastPosition, lastRotation, VelocityDefaultZero);
                         //TO DO: Using Reliable UDP??
                     }
                     else
@@ -317,7 +322,7 @@ namespace MayaVerseNetworkingClient1_5
         /// <param name="isKine">If set to <c>true</c> is kine.</param>
         /// <param name="Pos">Position.</param>
         /// <param name="Rot">Rot.</param>
-        public static void SendMessage(SendType SType, PacketId Type, ushort IDObject, string OwnerPlayer, bool isKine, Vector3 Pos, Quaternion Rot)
+        public static void SendMessage(SendType SType, PacketId Type, ushort IDObject, string OwnerPlayer, bool isKine, Vector3 Pos, Quaternion Rot, Vector3 Vel)
         {
             byte TypeBuffer = 0;
             byte STypeBuffer = 0;
@@ -385,11 +390,16 @@ namespace MayaVerseNetworkingClient1_5
 
             //Convert from HazelUDPTestClient.Quaternion at System.Numerics.Quaternion
             System.Numerics.Quaternion InternalRot = new System.Numerics.Quaternion(Rot.X, Rot.Y, Rot.Z, Rot.W);
-            // Compress rotation data
+            //Compress rotation data
             CompressedQuaternion compressedRotation = SmallestThree.Compress(InternalRot);
 
-            // Read compressed data
+            //Read compressed data
             Console.WriteLine("Compressed rotation - M: " + compressedRotation.m + ", A:" + compressedRotation.a + ", B:" + compressedRotation.b + ", C:" + compressedRotation.c);
+
+            //Add and compress Vector3 Velocity
+            ushort compressedVelocityX = HalfPrecision.Compress(Vel.X);
+            ushort compressedVelocityY = HalfPrecision.Compress(Vel.Y);
+            ushort compressedVelocityZ = HalfPrecision.Compress(Vel.Z);
 
             //Reset bit buffer for further reusing
             data.Clear();
@@ -404,7 +414,10 @@ namespace MayaVerseNetworkingClient1_5
                 .AddByte(compressedRotation.m)
                 .AddInt(compressedRotation.a)
                 .AddInt(compressedRotation.b)
-                .AddInt(compressedRotation.c);
+                .AddInt(compressedRotation.c)
+                .AddUShort(compressedVelocityX)
+                .AddUShort(compressedVelocityY)
+                .AddUShort(compressedVelocityZ);
 
             Console.WriteLine("BitBuffer: " + data.Length.ToString());
 

@@ -202,6 +202,8 @@ namespace MayaVerseNetworkingClient1_5
                 //Read Vector3 Compress Velocity
                 //ushort compressedVelocityX = HalfPrecision.Compress(speed);
                 Vector3 VelocityReceived = new Vector3(HalfPrecision.Decompress(data.ReadUShort()), HalfPrecision.Decompress(data.ReadUShort()), HalfPrecision.Decompress(data.ReadUShort()));
+                //Read Float InterpolationTime
+                float InterpolationTime = HalfPrecision.Decompress(data.ReadUShort());
 
                 // Check if bit buffer is fully unloaded
                 Console.WriteLine("Bit buffer is empty: " + data.IsFinished);
@@ -230,6 +232,7 @@ namespace MayaVerseNetworkingClient1_5
                     Console.WriteLine("POS RECEIVED: " + decompressedPosition.X.ToString() + ", " + decompressedPosition.Y.ToString() + ", " + decompressedPosition.Z.ToString());
                     Console.WriteLine("ROT RECEIVED: " + decompressedRotation.X.ToString() + ", " + decompressedRotation.Y.ToString() + ", " + decompressedRotation.Z.ToString() + ", " + decompressedRotation.W.ToString());
                     Console.WriteLine("VEL RECEIVED: " + VelocityReceived.X.ToString() + ", " + VelocityReceived.Y.ToString() + ", " + VelocityReceived.Z.ToString());
+                    Console.WriteLine("INTERPOLATION TIME: " + InterpolationTime.ToString());
                 }
 
                 if ((byte)PacketId.PLAYER_JOIN == TypeBuffer)
@@ -322,7 +325,7 @@ namespace MayaVerseNetworkingClient1_5
         /// <param name="isKine">If set to <c>true</c> is kine.</param>
         /// <param name="Pos">Position.</param>
         /// <param name="Rot">Rot.</param>
-        public static void SendMessage(SendType SType, PacketId Type, ushort IDObject, string OwnerPlayer, bool isKine, Vector3 Pos, Quaternion Rot, Vector3 Vel)
+        public static void SendMessage(SendType SType, PacketId Type, ushort IDObject, string OwnerPlayer, bool isKine, Vector3 Pos, Quaternion Rot, Vector3 Vel, float InterTime)
         {
             byte TypeBuffer = 0;
             byte STypeBuffer = 0;
@@ -400,6 +403,9 @@ namespace MayaVerseNetworkingClient1_5
             ushort compressedVelocityX = HalfPrecision.Compress(Vel.X);
             ushort compressedVelocityY = HalfPrecision.Compress(Vel.Y);
             ushort compressedVelocityZ = HalfPrecision.Compress(Vel.Z);
+
+            //Add and compress Interporlation Time
+
 
             //Reset bit buffer for further reusing
             data.Clear();

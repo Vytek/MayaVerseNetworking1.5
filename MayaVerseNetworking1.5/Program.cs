@@ -146,17 +146,17 @@ namespace MayaVerseNetworkingClient1_5
                     if (cki.Key.ToString().ToLower() == "m")
                     {
                         System.Numerics.Vector3 NewOnePosition = new Vector3(1, 2, 3);
-                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 1, AvatarName, true, NewOnePosition, lastRotation, VelocityDefaultZero);
+                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 1, AvatarName, true, NewOnePosition, lastRotation, VelocityDefaultZero, 0f);
                     }
                     if (cki.Key.ToString().ToLower() == "n")
                     {
                         System.Numerics.Vector3 NewOnePosition = new Vector3(3, 2, 1);
-                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 1, AvatarName, true, NewOnePosition, lastRotation, VelocityDefaultZero);
+                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 1, AvatarName, true, NewOnePosition, lastRotation, VelocityDefaultZero, 1f);
                     }
                     if (cki.Key.ToString().ToLower() == "i")
                     {
                         System.Numerics.Vector3 NewOnePosition = new Vector3(3, 2, 1);
-                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 2, AvatarName, true, NewOnePosition, lastRotation, VelocityDefaultZero);
+                        SendMessage(SendType.SENDTOOTHER, PacketId.OBJECT_MOVE, 2, AvatarName, true, NewOnePosition, lastRotation, VelocityDefaultZero, 2f);
                     }
                 } while (cki.Key != ConsoleKey.Escape);
 
@@ -242,7 +242,7 @@ namespace MayaVerseNetworkingClient1_5
                     //Spawn something? YES
                     //Using Dispatcher? NO
                     //PlayerSpawn
-                    SendMessage(SendType.SENDTOOTHER, PacketId.PLAYER_SPAWN, 0, UID + ";" + AvatarName, true, lastPosition, lastRotation, VelocityDefaultZero);
+                    SendMessage(SendType.SENDTOOTHER, PacketId.PLAYER_SPAWN, 0, UID + ";" + AvatarName, true, lastPosition, lastRotation, VelocityDefaultZero, 0f);
                     //TODO: Using Reliable UDP??
                 }
                 else if ((byte)PacketId.OBJECT_MOVE == TypeBuffer)
@@ -292,7 +292,7 @@ namespace MayaVerseNetworkingClient1_5
                         //UnityMainThreadDispatcher.Instance().Enqueue(SetUIDInMainThread(HMessageReceived.Answer));
                         Console.WriteLine("UID RECEIVED: " + Answer);
                         //PLAYER_JOIN MESSAGE (SENDTOOTHER)
-                        SendMessage(SendType.SENDTOOTHER, PacketId.PLAYER_JOIN, 0, UID + ";" + AvatarName, true, lastPosition, lastRotation, VelocityDefaultZero);
+                        SendMessage(SendType.SENDTOOTHER, PacketId.PLAYER_JOIN, 0, UID + ";" + AvatarName, true, lastPosition, lastRotation, VelocityDefaultZero, 0f);
                         //TO DO: Using Reliable UDP??
                     }
                     else
@@ -405,7 +405,7 @@ namespace MayaVerseNetworkingClient1_5
             ushort compressedVelocityZ = HalfPrecision.Compress(Vel.Z);
 
             //Add and compress Interporlation Time
-
+            ushort compressedTimeInterpolation = HalfPrecision.Compress(InterTime);
 
             //Reset bit buffer for further reusing
             data.Clear();
@@ -423,7 +423,8 @@ namespace MayaVerseNetworkingClient1_5
                 .AddInt(compressedRotation.c)
                 .AddUShort(compressedVelocityX)
                 .AddUShort(compressedVelocityY)
-                .AddUShort(compressedVelocityZ);
+                .AddUShort(compressedVelocityZ)
+                .AddUShort(compressedTimeInterpolation);
 
             Console.WriteLine("BitBuffer: " + data.Length.ToString());
 

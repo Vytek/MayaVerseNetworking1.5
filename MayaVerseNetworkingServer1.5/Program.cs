@@ -318,6 +318,9 @@ namespace MayaVerseNetworkingServer1_5
                         //ushort compressedVelocityX = HalfPrecision.Compress(speed);
                         Vector3 VelocityReceived = new Vector3(HalfPrecision.Decompress(data.ReadUShort()), HalfPrecision.Decompress(data.ReadUShort()), HalfPrecision.Decompress(data.ReadUShort()));
 
+                        //Read Float InterpolationTime
+                        float InterpolationTime = HalfPrecision.Decompress(data.ReadUShort());
+
                         // Check if bit buffer is fully unloaded
                         Console.WriteLine("Bit buffer is empty: " + data.IsFinished);
 
@@ -348,6 +351,7 @@ namespace MayaVerseNetworkingServer1_5
                             Console.WriteLine("PosY: " + decompressedPosition.Y);
                             Console.WriteLine("PosZ: " + decompressedPosition.Z);
                             Console.WriteLine("VEL RECEIVED: " + VelocityReceived.X.ToString() + ", " + VelocityReceived.Y.ToString() + ", " + VelocityReceived.Z.ToString());
+                            Console.WriteLine("INTERPOLATION TIME: " + InterpolationTime.ToString());
                             //var ReceiveMessageFromGameObjectBuffer = new ReceiveMessageFromGameObject(); //NOT USED!
                         }
 
@@ -582,6 +586,9 @@ namespace MayaVerseNetworkingServer1_5
                             //Add Velocity Vector (0,0,0)
                             Vector3 velocity = Vector3.Zero;
 
+                            //Add and compress Interporlation Time
+                            ushort compressedTimeInterpolation = HalfPrecision.Compress(0f);
+
                             //Reset bit buffer for further reusing
                             data.Clear();
                             //Serialization
@@ -598,7 +605,8 @@ namespace MayaVerseNetworkingServer1_5
                                 .AddShort(compressedRotation.c) //Add dummy date (0,0,0)
                                 .AddUShort(HalfPrecision.Compress(velocity.X))
                                 .AddUShort(HalfPrecision.Compress(velocity.Y))
-                                .AddUShort(HalfPrecision.Compress(velocity.Z));
+                                .AddUShort(HalfPrecision.Compress(velocity.Z))
+                                .AddUShort(compressedTimeInterpolation);
 
                             Console.WriteLine("BitBuffer: " + data.Length.ToString());
 
